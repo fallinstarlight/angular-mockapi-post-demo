@@ -38,16 +38,59 @@
     <button (click)="sendPost()" [disabled]="loading">
       {{ loading ? 'Enviando...' : 'Enviar POST' }}
     </button>
+    <p *ngIf="albumMessage" class="error">
+      {{ albumMessage }}
+    </p>
+
+  <hr />
+  <!-- Formulario del POST artista -->
+  <h2>Crear Artista</h2>
+
+  <div class="form">
+    <label>ID</label>
+    <input type="text" [(ngModel)]="artistForm.id" placeholder="ID del artista..."/>
+
+    <label>Nombre</label>
+    <input type="text" [(ngModel)]="artistForm.name" placeholder="Nombre del artista..."/>
+
+    <label>Status</label>
+    <input type="text" [(ngModel)]="artistForm.status" placeholder="Estatus del artista [Activo/Inactivo]..."/>
+
+    <label>Género</label>
+    <input type="text" [(ngModel)]="artistForm.genre" placeholder="Género del artista..."/>
+
+    <button (click)="sendArtist()" [disabled]="loading">
+      Crear Artista
+    </button>
+
+    <p *ngIf="artistMessage" class="error">
+      {{ artistMessage }}
+    </p>
+
   </div>
 
-  <!-- Error -->
-  <p *ngIf="errorMessage" class="error">
-    {{ errorMessage }}
-  </p>
+  <hr />
+  <h2>Crear Género</h2>
 
-  <!-- Resultado del POST -->
-  <div *ngIf="createdPost" class="card">
-    <h2>✅ Creado</h2>
-    <pre>{{ createdPost | json }}</pre>
+  <div class="form">
+    <label>ID</label>
+    <input type="text" [(ngModel)]="genreForm.id" placeholder="ID del Género..."/>
+
+    <label>Nombre</label>
+    <input type="text" [(ngModel)]="genreForm.name" placeholder="Nombre del género..."/>
+
+    <label>País de Origen</label>
+    <input type="text" [(ngModel)]="genreForm.origin_Country" placeholder="País de origen..."/>
+
+    <button (click)="sendGenre()" [disabled]="loading">
+      Crear Género
+    </button>
+
+    <p *ngIf="genreMessage" class="error">
+      {{ genreMessage }}
+    </p>
   </div>
+
+
+
 </div>
