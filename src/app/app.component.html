@@ -1,96 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>POST Demo (Mock)</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --green-dark:   #1a4d2e;
+      --green-mid:    #2d7a4f;
+      --green-light:  #4caf73;
+      --green-pale:   #d4edda;
+      --green-ghost:  #f0faf3;
+      --white:        #ffffff;
+      --off-white:    #f7fdf9;
+      --text-dark:    #0f2a1a;
+      --text-muted:   #5a7a65;
+      --border:       #b8ddc5;
+      --shadow:       rgba(26, 77, 46, 0.12);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--off-white);
+      background-image: radial-gradient(ellipse at 0% 0%, #c8ecd4 0%, transparent 55%),
+                        radial-gradient(ellipse at 100% 100%, #d6f0de 0%, transparent 55%);
+      min-height: 100vh;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text-dark);
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--green-dark);
+      letter-spacing: -0.03em;
+      margin-bottom: 1.75rem;
+      position: relative;
+      padding-left: 1rem;
+    }
+    h1::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 4px;
+      background: var(--green-light);
+      border-radius: 4px;
+    }
+
+    h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--green-dark);
+      margin-bottom: 1.25rem;
+      letter-spacing: -0.02em;
+    }
+
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.75rem 2rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 12px var(--shadow);
+      transition: box-shadow 0.2s;
+    }
+    .card:hover {
+      box-shadow: 0 4px 24px var(--shadow);
+    }
+
+    .section-label {
+      display: inline-block;
+      background: var(--green-pale);
+      color: var(--green-dark);
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.65rem;
+      border-radius: 20px;
+      margin-bottom: 1.25rem;
+    }
+
+    .form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+    }
+
+    label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--green-dark);
+      letter-spacing: 0.02em;
+      margin-bottom: -0.5rem;
+    }
+
+    input {
+      background: var(--green-ghost);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 0.65rem 0.9rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      color: var(--text-dark);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    }
+    input::placeholder { color: #9dbfab; }
+    input:focus {
+      border-color: var(--green-mid);
+      background: var(--white);
+      box-shadow: 0 0 0 3px rgba(45, 122, 79, 0.12);
+    }
+
+    small {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: -0.4rem;
+    }
+
+    button {
+      background: var(--green-dark);
+      color: var(--white);
+      border: none;
+      border-radius: 10px;
+      padding: 0.75rem 1.25rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+      box-shadow: 0 2px 8px rgba(26, 77, 46, 0.25);
+      margin-top: 0.25rem;
+      letter-spacing: 0.01em;
+    }
+    button:hover:not(:disabled) {
+      background: var(--green-mid);
+      box-shadow: 0 4px 16px rgba(26, 77, 46, 0.3);
+      transform: translateY(-1px);
+    }
+    button:active:not(:disabled) { transform: translateY(0); }
+    button:disabled {
+      background: var(--border);
+      color: var(--text-muted);
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .error {
+      font-size: 0.82rem;
+      color: var(--green-mid);
+      background: var(--green-pale);
+      border: 1px solid var(--green-light);
+      border-radius: 8px;
+      padding: 0.55rem 0.9rem;
+      margin-top: 0.25rem;
+    }
+
+    .url-card {
+      background: var(--green-ghost);
+      border: 1.5px dashed var(--border);
+      border-radius: 14px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .url-card label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    .url-card input {
+      background: var(--white);
+    }
+  </style>
+</head>
+<body>
 <div class="container">
-  <h1>POST Demo (Mock)</h1>
 
-  <!-- Input para la URL del API -->
-  <div class="form">
-    <label>API Base URL (Mock)</label>
-    <input
-      type="text"
-      [(ngModel)]="apiBaseUrl"
-      placeholder="https://api.jsoning.com/mock/TOKEN/"
-    />
+  <h1>POST Demo <span style="color:var(--green-light)">(Mock)</span></h1>
+
+  <!-- API URL -->
+  <div class="url-card">
+    <div class="form">
+      <label>API Base URL (Mock)</label>
+      <input type="text" [(ngModel)]="apiBaseUrl" placeholder="https://api.jsoning.com/mock/TOKEN/" />
+    </div>
   </div>
 
-  <hr />
+  <!-- Álbum -->
+  <div class="card">
+    <span class="section-label">Álbum</span>
+    <div class="form">
+      <label>ID</label>
+      <input type="text" [(ngModel)]="form.id" placeholder="ID del álbum..." />
 
-  <!-- Formulario del POST -->
-  <div class="form">
-    <label>ID</label>
-    <input type="text" [(ngModel)]="form.id" placeholder="ID del álbum..." />
+      <label>Nombre del Álbum</label>
+      <input type="text" [(ngModel)]="form.name" placeholder="Nombre del álbum..." />
 
-    <label>Nombre del Álbum</label>
-    <input type="text" [(ngModel)]="form.name" placeholder="Nombre del álbum..." />
+      <label>Artista</label>
+      <input type="text" [(ngModel)]="form.artist" placeholder="Nombre del artista..." />
 
-    <label>Artista</label>
-    <input type="text" [(ngModel)]="form.artist" placeholder="Nombre del artista..." />
+      <label>Año</label>
+      <input type="number" [(ngModel)]="form.year" placeholder="Año de lanzamiento..." />
 
-    <label>Año</label>
-    <input type="number" [(ngModel)]="form.year" placeholder="Año de lanzamiento..." />
+      <label>Tracks</label>
+      <input type="text" [(ngModel)]="tracksInput" placeholder="Track 1, Track 2, Track 3..." />
+      <small>Ingresa los tracks separados por coma</small>
 
-    <label>Tracks (separados por coma)</label>
-    <input 
-      type="text" 
-      [(ngModel)]="tracksInput" 
-      placeholder="Track 1, Track 2, Track 3..." 
-    />
-    <small>Ingresa los tracks separados por coma</small>
-
-    <button (click)="sendPost()" [disabled]="loading">
-      {{ loading ? 'Enviando...' : 'Enviar POST' }}
-    </button>
-    <p *ngIf="albumMessage" class="error">
-      {{ albumMessage }}
-    </p>
-
-  <hr />
-  <!-- Formulario del POST artista -->
-  <h2>Crear Artista</h2>
-
-  <div class="form">
-    <label>ID</label>
-    <input type="text" [(ngModel)]="artistForm.id" placeholder="ID del artista..."/>
-
-    <label>Nombre</label>
-    <input type="text" [(ngModel)]="artistForm.name" placeholder="Nombre del artista..."/>
-
-    <label>Status</label>
-    <input type="text" [(ngModel)]="artistForm.status" placeholder="Estatus del artista [Activo/Inactivo]..."/>
-
-    <label>Género</label>
-    <input type="text" [(ngModel)]="artistForm.genre" placeholder="Género del artista..."/>
-
-    <button (click)="sendArtist()" [disabled]="loading">
-      Crear Artista
-    </button>
-
-    <p *ngIf="artistMessage" class="error">
-      {{ artistMessage }}
-    </p>
-
+      <button (click)="sendPost()" [disabled]="loading">
+        {{ loading ? 'Enviando...' : 'Enviar POST' }}
+      </button>
+      <p *ngIf="albumMessage" class="error">{{ albumMessage }}</p>
+    </div>
   </div>
 
-  <hr />
-  <h2>Crear Género</h2>
+  <!-- Artista -->
+  <div class="card">
+    <span class="section-label">Artista</span>
+    <h2>Crear Artista</h2>
+    <div class="form">
+      <label>ID</label>
+      <input type="text" [(ngModel)]="artistForm.id" placeholder="ID del artista..." />
 
-  <div class="form">
-    <label>ID</label>
-    <input type="text" [(ngModel)]="genreForm.id" placeholder="ID del Género..."/>
+      <label>Nombre</label>
+      <input type="text" [(ngModel)]="artistForm.name" placeholder="Nombre del artista..." />
 
-    <label>Nombre</label>
-    <input type="text" [(ngModel)]="genreForm.name" placeholder="Nombre del género..."/>
+      <label>Status</label>
+      <input type="text" [(ngModel)]="artistForm.status" placeholder="Estatus del artista [Activo/Inactivo]..." />
 
-    <label>País de Origen</label>
-    <input type="text" [(ngModel)]="genreForm.origin_Country" placeholder="País de origen..."/>
+      <label>Género</label>
+      <input type="text" [(ngModel)]="artistForm.genre" placeholder="Género del artista..." />
 
-    <button (click)="sendGenre()" [disabled]="loading">
-      Crear Género
-    </button>
-
-    <p *ngIf="genreMessage" class="error">
-      {{ genreMessage }}
-    </p>
+      <button (click)="sendArtist()" [disabled]="loading">Crear Artista</button>
+      <p *ngIf="artistMessage" class="error">{{ artistMessage }}</p>
+    </div>
   </div>
 
+  <!-- Género -->
+  <div class="card">
+    <span class="section-label">Género</span>
+    <h2>Crear Género</h2>
+    <div class="form">
+      <label>ID</label>
+      <input type="text" [(ngModel)]="genreForm.id" placeholder="ID del Género..." />
 
+      <label>Nombre</label>
+      <input type="text" [(ngModel)]="genreForm.name" placeholder="Nombre del género..." />
+
+      <label>País de Origen</label>
+      <input type="text" [(ngModel)]="genreForm.origin_Country" placeholder="País de origen..." />
+
+      <button (click)="sendGenre()" [disabled]="loading">Crear Género</button>
+      <p *ngIf="genreMessage" class="error">{{ genreMessage }}</p>
+    </div>
+  </div>
 
 </div>
+</body>
+</html>
