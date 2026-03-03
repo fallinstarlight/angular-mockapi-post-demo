@@ -2,15 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, ChangeDetectorRef, NgZone } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-
 import {
   MockPostsService,
   CreateAlbumPostRequest,
   PostResponse, CreateArtistPostRequest,
   CreateGenrePostRequest
 } from './mock-posts.service';
-
-
 
 @Component({
   selector: 'app-root',
@@ -20,10 +17,9 @@ import {
   styleUrls: ['./app.component.css']
 })
 
-
 export class AppComponent {
 
-
+  /* Inicializar variables de mensaje */
   albumMessage: string = '';
   artistMessage: string = '';
   genreMessage: string = '';
@@ -31,6 +27,7 @@ export class AppComponent {
   /* La API expira cada día, por lo que se debe de cambiar el token al nuevo que se esté usando */
   apiBaseUrl: string = 'https://api.jsoning.com/mock/TOKEN_DE_LA_API';
 
+  /* Objeto que guarda la respuesta de la API en el método post Album */
   form: CreateAlbumPostRequest = {
     id: '',
     name: '',
@@ -39,6 +36,13 @@ export class AppComponent {
     tracks: []
   };
 
+  /* Variable que guarda el campo de texto de las canciones de un álbum, se guardan en otro objeto porque
+se debe de trabajar diferente esta input */
+  tracksInput: string = '';
+
+  loading = false;
+
+  /* Objeto que guarda la respuesta de la API en el método post Artista */
   artistForm: CreateArtistPostRequest = {
     id: '',
     name: '',
@@ -46,24 +50,31 @@ export class AppComponent {
     genre: ''
   };
 
+  /* Objeto que guarda la respuesta de la API en el método post género */
   genreForm: CreateGenrePostRequest = {
     id: '',
     name: '',
     origin_Country: ''
   };
-  tracksInput: string = '';
 
-  loading = false;
-  
+  /* Constructor de la clase */
   constructor(
     private postsApi: MockPostsService,
     private cdr: ChangeDetectorRef,
     private zone: NgZone
-  ) {}
+  ) { }
 
+  /* Método para Post Album */
   sendPost(): void {
     this.albumMessage = '';
 
+    /* Tomar la cadena de texto colocada en el campo de canciones (tracks)
+    Se separa la cadena cada vez que se encuentra una coma, para así construir un
+    arreglo con todos los textos separados. p. ej. track1, track2, track3 => {
+                                                                              track1,
+                                                                              track2,
+                                                                              track3
+                                                                              } */
     if (this.tracksInput.trim()) {
       this.form.tracks = this.tracksInput
         .split(',')
@@ -73,6 +84,7 @@ export class AppComponent {
       this.form.tracks = [];
     }
 
+    /* Validar que todos los campos tengan algo escrito */
     if (!this.apiBaseUrl.trim()) {
       this.albumMessage = 'La URL del API es obligatoria.';
       return;
@@ -88,6 +100,7 @@ export class AppComponent {
 
     this.loading = true;
 
+    /* Intentar el Post album (createPost) */
     this.postsApi.createPost(this.apiBaseUrl.trim(), this.form).subscribe({
       next: (res) => {
         this.zone.run(() => {
@@ -107,18 +120,11 @@ export class AppComponent {
     });
   }
 
+  /* Método post artist */
   sendArtist(): void {
     this.artistMessage = '';
 
-    if (this.tracksInput.trim()) {
-      this.form.tracks = this.tracksInput
-        .split(',')
-        .map(track => track.trim())
-        .filter(track => track.length > 0);
-    } else {
-      this.form.tracks = [];
-    }
-
+    /* Validación de campos de texto */
     if (!this.apiBaseUrl.trim()) {
       this.artistMessage = 'La URL del API es obligatoria.';
       return;
@@ -135,7 +141,8 @@ export class AppComponent {
       this.artistMessage = 'Género obligatorio.';
       return;
     }
-    
+
+    /* Intentar el post */
     this.loading = true;
     this.postsApi.createPost(this.apiBaseUrl.trim(), this.form).subscribe({
       next: (res) => {
@@ -156,19 +163,12 @@ export class AppComponent {
     });
   }
 
+  /* Método post género */
   sendGenre(): void {
-    
+
     this.genreMessage = '';
 
-    if (this.tracksInput.trim()) {
-      this.form.tracks = this.tracksInput
-        .split(',')
-        .map(track => track.trim())
-        .filter(track => track.length > 0);
-    } else {
-      this.form.tracks = [];
-    }
-    
+    /* Validar los datos */
     if (!this.apiBaseUrl.trim()) {
       this.genreMessage = 'La URL del API es obligatoria.';
       return;
@@ -182,6 +182,7 @@ export class AppComponent {
       return;
     }
 
+    /* Intentar el post */
     this.loading = true;
     this.postsApi.createPost(this.apiBaseUrl.trim(), this.form).subscribe({
       next: (res) => {
